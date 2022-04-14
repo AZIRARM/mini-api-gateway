@@ -28,7 +28,7 @@ The routes of each api do not need to be configured, the gateway takes the heade
 
 ### token
 ```
-curl --location --request GET 'http://localhost:3000?api=MarketUsersApi&path=/&token=TEST-SECRET-TO-GENERATE'
+curl --location --request GET 'http://localhost:3000?api=UsersApi&path=/&token=TEST-SECRET-TO-GENERATE'
 ```
 
 ### api-key
@@ -42,7 +42,7 @@ curl --location --request GET 'http://localhost:3000?api=UsersApi&path=/' \
 # Licence
 MIT License
 
-Copyright (c) %%current_date_yyyy%% ITExpert
+Copyright (c) 2022 ITExpert
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
