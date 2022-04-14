@@ -12,20 +12,7 @@ Minimal Api Gateway very easy to use
     "apiVersion": "0.0.1",
     "authenticationType": "api-key",
     "authenticationSecret": "TEST-SECRET-TO-GENERATE",
-    "routes": [
-      {
-        "path": "/",
-        "method": "GET",
-        "description":"Get all users",
-        "accept": "application/json",
-        "contentType": "application/json",
-        "withBody": false,
-        "requestExample": "",
-        "responseExample": ""
-      }
-    ]
   }
-
 ]
 
 ```
@@ -33,7 +20,9 @@ Minimal Api Gateway very easy to use
 You can declare as many APIs as you want.
 Each API has its own access configuration, two types: token, api-key, generated or filled in by you (example when launching the docker container if you decide to embed this code in a docker).
 
-Each API has routes, each route is characterized by the HTTP method, its path, its content-type, whether or not it has a body... .
+Each API has routes, each route is characterized by the HTTP method, its path, its content type, whether or not it has a body... .
+
+The routes of each api do not need to be configured, the gateway takes the headers, the body, the parameters from the client calling mini-api-gateway.
 
 ## How to use
 
