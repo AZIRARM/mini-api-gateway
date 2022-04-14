@@ -1,0 +1,29 @@
+{
+  "name": "mini-api-gateway",
+  "version": "0.0.1",
+  "description": "Mini API Gateway",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AZIRARM/mini-api-gateway.git"
+  },
+  "keywords": [
+    "min api gateway",
+    "api",
+    "Gateway"
+  ],
+  "author": "azirarm@gmail.com",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.26.1",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "fs": "^0.0.1-security",
+    "nodemon": "^2.0.15",
+    "request": "^2.88.2"
+  }
+}
