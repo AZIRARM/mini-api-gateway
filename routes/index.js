@@ -11,97 +11,130 @@ let settings = JSON.parse(jsonContent);
 console.log(settings);
 
 
-router.all('/', (req, resp) => {
+router.all('/gateway/*', (req, resp) => {
 
-    let api = req.query.api;
+    let url = req.protocol + '://' + req.get('host') + req.originalUrl;
+    checkUrl(resp, url, false);
+
+    url = url.split('?')[0]
+    checkUrl(resp, url, false);
+
+    url = url.split('/gateway')[1]
+    checkUrl(resp, url, true);
+
+
+    let api = url.split('/')[1];
+    console.debug("API Requested : "+api);
 
     settings.filter(setting => setting.apiName ===  api).map(
         setting => {
-            console.log("Api name : "+ setting.apiName);
-            console.log("Api url : "+ setting.apiUrl);
-            console.log("Api description: "+ setting.apiDescription);
-            console.log("Api version : "+ setting.apiVersion);
-            console.log("Api authentication type: "+ setting.authenticatioType);
+            console.debug("Api name : "+ setting.apiName);
+            console.debug("Api url : "+ setting.apiUrl);
+            console.debug("Api description: "+ setting.apiDescription);
+            console.debug("Api version : "+ setting.apiVersion);
+            console.debug("Api authentication type: "+ setting.authenticationType);
 
-            let path = req.query.path;
-            setting.routes.filter(route => route.path == path).map (
-                route => {
-                    console.log("--> Path  : "+ route.path);
-                    console.log("--> Method  : "+ route.method);
-                    console.log("--> Description  : "+ route.description);
-                    console.log("--> Accept  : "+ route.accept);
-                    console.log("--> Content type  : "+ route.contentType);
-                    console.log("--> With body  : "+ route.withBody);
-                    console.log("--> Request example  : "+ route.requestExample);
-                    console.log("--> Response example  : "+ route.responseExample);
+            let path = url.replace('/'+api,'');
 
-                let authenticationSuccess = false;
-                 if(setting.authenticationType === 'token') {
-                    let token = req.query.token;
-                    console.error("Token : "+token);
+            if(path === '') {
+                path = '/';
+            }
 
-                    if(!token || token !== setting.authenticationSecret) {
-                            console.error("You do not have the necessary permissions to access this resource");
+            console.debug("--> Path  : "+ path);
+            console.debug("--> Method  : "+ req.method);
+            console.debug("--> Headers  : "+ JSON.stringify(req.headers));
+            console.debug("--> Body  : "+ JSON.stringify(req.body));
 
-                            resp.statusCode = 401;
-                            resp.send("You do not have the necessary permissions to access this resource");
-                            return ;
-                    }
-                    authenticationSuccess = true;
-                 }
-                 if(setting.authenticationType === 'api-key') {
-                     let apikey = req.header('api-key')
-                     console.error("api-key : "+apikey);
+            let authenticationSuccess = false;
 
-                     if(!apikey || apikey !== setting.authenticationSecret) {
-                             console.error("You do not have the necessary permissions to access this resource");
+             if(setting.authenticationType === 'token') {
+                console.debug("Token Authentication");
+                authenticationSuccess = checkAuthentication(req.query.token, setting, resp);
+             }
+             if(setting.authenticationType === 'api-key') {
+                console.debug("Api-Key Authentication");
+                authenticationSuccess = checkAuthentication(req.header('api-key'), setting, resp);
+              }
 
-                             resp.statusCode = 401;
-                             resp.send("You do not have the necessary permissions to access this resource");
-                             return ;
+              if(authenticationSuccess) {
+                let route = req.protocol + '://' + req.get('host') + req.originalUrl;
+                route = route.replace(api, '');
+                route = route.replace(/\/\//g, "/");
+
+                route = setting.apiUrl + route.split('/gateway')[1];
+
+                if(setting.authenticationType === 'token') {
+                     route = route.replace('token='+req.query.token,'');
+                     if(!route.includes('&') && route.includes('?')) {
+                        route = route.replace('?','');
                      }
-                    authenticationSuccess = true;
-                  }
-
-                  if(authenticationSuccess) {
-                    startRequest(req, resp, setting, route);
-                  } else {
-                    resp.statusCode = 500;
-                    resp.send("An error in your configuration is present, please check the configuration file before continuing");
-                    return ;
-                  }
-
-
                 }
-            );
+
+                delete req.headers['api-key'];
+                delete req.headers['user-agent'];
+
+
+                startRequest(req, resp, req.method, route, JSON.stringify(req.headers), JSON.stringify(req.body));
+              } else {
+                resp.statusCode = 500;
+                resp.send("An error in your configuration is present, please check the configuration file before continuing");
+                return ;
+              }
+
+
         }
     );
 
 } );
 
-startRequest = function (req, resp, setting, route) {
-    console.log("----> Call route "+setting.apiUrl + route.path+", Method : "+route.method);
 
+const checkUrl = ((resp, url, checkQueryParams) => {
+    if(url !== null || (checkQueryParams && !url.includes('&')) || (checkQueryParams && !url.includes('?'))) {
+        return true;
+     }
+    console.error("Malformed URL");
+    resp.statusCode = 500;
+    resp.send("Malformed URL");
+});
+
+const checkAuthentication = ((secret, setting, response) => {
+     console.error("Client-secret : " + secret);
+
+     if(!setting || secret !== setting.authenticationSecret) {
+             console.error("You do not have the necessary permissions to access this resource");
+             response.statusCode = 401;
+             response.send("You do not have the necessary permissions to access this resource");
+             return ;
+     }
+    return true;
+});
+
+const startRequest =  ((req, resp, method, route, headers, body) => {
+    console.log("----> Call route " + route + ", Method : " + method);
     request({
          headers: {
-           'Accept': route.accept,
-           'Content-Type': route.contentType
-         },
-         uri: setting.apiUrl + route.path,
-         body: route.withBody ? req.body : null,
-         method: route.method
+            'Accept': req.headers['accept'],
+            'Content-Type': req.headers['content-Type']
+          },
+         uri: route,
+         body: body,
+         method: method
        }, function (err, res, body) {
             if (err) {
-                return console.log(err);
+                console.log(err);
+                return ;
             }
             if(res.statusCode >= 400) {
+                console.error("Error occurred when call  : " + route + ", Method : " + method + ", Status Code : " + res.statusCode);
                 resp.statusCode = res.statusCode;
-                resp.send("Error access : "+setting.apiUrl + route.path+", Status Code : "+res.statusCode);
+                resp.send("Error access : " + route + ", Status Code : " + res.statusCode);
+                return ;
             }
             resp.statusCode = res.statusCode;
             resp.send(res.body);
+            return ;
        });
-}
+});
 
 
 module.exports = router;
