@@ -1,8 +1,8 @@
 # mini-api-gateway
 Minimal Api Gateway very easy to use
 
-# Description
-## Presentation
+# Settings
+## Configuration
 ```
 [
   {
@@ -24,9 +24,15 @@ Each API has routes, each route is characterized by the HTTP method, its path, i
 
 The routes of each api do not need to be configured, the gateway takes the headers, the body, the parameters from the client calling mini-api-gateway.
 
-## How to use
+## Server parameters
+you can change the server port by setting the environment variable: GATEWAY_PORT
+
+# How to use
 
 ### token
+
+Today two authentication : token (in query param of url) and by api-key (in the headers of the request)
+
 ```
 curl --location --request GET 'http://localhost:3000?api=UsersApi&path=/&token=TEST-SECRET-TO-GENERATE'
 ```
@@ -37,27 +43,3 @@ curl --location --request GET 'http://localhost:3000?api=UsersApi&path=/' \
 --header 'api-key: TEST-SECRET-TO-GENERATE'
 ```
 
-
-
-# Licence
-MIT License
-
-Copyright (c) 2022 ITExpert
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
