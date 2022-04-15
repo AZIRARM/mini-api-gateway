@@ -1,4 +1,4 @@
-[MIT License](./license.md)
+[MIT License](./license.md) [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Naereen/StrapDown.js/blob/master/LICENSE)
 
 # mini-api-gateway
 Minimal Api Gateway very easy to use
