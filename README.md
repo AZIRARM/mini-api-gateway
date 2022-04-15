@@ -9,7 +9,7 @@ Minimal Api Gateway very easy to use
 [
   {
     "apiName": "UsersApi",
-    "apiUrl": "http://localhost:8080/users",
+    "apiUrl": "http://192.168.0.12:8080/users",
     "apiDescription": "Api to manage Users",
     "apiVersion": "0.0.1",
     "authenticationType": "api-key",
@@ -18,6 +18,11 @@ Minimal Api Gateway very easy to use
 ]
 
 ```
+
+I.E : <i>In apiUrl you need to set ip adress of your service, not localhost or 127.0.0.1 (only if your service is runing in same container that mini-api-gateway).</i>
+
+Because localhost/127.0.0.1 correspond to internal adess of your container.
+
 
 You can declare as many APIs as you want.
 Each API has its own access configuration, two types: token, api-key, generated or filled in by you (example when launching the docker container if you decide to embed this code in a docker).
