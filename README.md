@@ -1,3 +1,5 @@
+[MIT License](./license.md)
+
 # mini-api-gateway
 Minimal Api Gateway very easy to use
 
