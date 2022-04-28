@@ -37,6 +37,16 @@ curl --location --request GET 'http://localhost:3000?api=UsersApi&path=/' \
 --header 'api-key: TEST-SECRET-TO-GENERATE'
 ```
 
+# Docker container
+You can find an image on docker hub.
+
+## Configuration
+3000 is the default port you can change it by setting environment variable <b>GATEWAY_PORT</b>.
+
+* You need in this version to set a volume (-v option) this volume.<br>
+* You must declare a volume that points to folder that contains the configuration file of your api gateway.<br>
+* This obligation will only be of short duration, a feature being tested to integrate management via a web dashboard.
+However, this volume will always be recommended so as not to lose your configuration.<br>
 
 
 # Licence
