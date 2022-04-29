@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+        <title>secrets-manager</title>
+        <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="assets/css/styles.css">
+        <script type="text/javascript" src="assets/jquery/jquery.js"></script>
+    </head>
+
+    <body>
+        <div id="google_translate_element"></div>
+        <h1 style="width: 98%;height: 100px;text-align: center;">
+            Mini Api Gateway
+        </h1>
+        <br>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-10">
+                    <label for="authorizationKeyId">Authorization - Api Key</label>
+                    <input type="text" class="form-control" id="authorizationKeyId" placeholder="Enter your Api key">
+                </div>
+                <div class="col-md-2">
+                    <i class="fa fa-refresh fa-2x" style="margin-top:20px; cursor: grab;" id="refreshAuthorizationId"></i>
+                </div>
+            </div>
+        </div>
+        <br>
+        <br>
+
+
+        <!-- APPLICATIONS -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12"><label class="form-label">APis</label>
+                    <select class="form-select" aria-label="Select Applications" id="selectApiId">
+                        <option value="none"> Select api</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row" style="margin: 5px;">
+                <div class="col-md-12" style="text-align: center; color: red;">
+                    <i class="fa fa-plus fa-2x"  id="buttonApiAddId"></i>
+                </div>
+                <div class="col-md-12" style="text-align: center; color: red;">
+                    <i class="fa fa-minus fa-2x"  id="buttonApiRemoveId" style="visibility: hidden"></i>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row" id="ApiPanelId" style="visibility:hidden;">
+                <div class="col-md-12" style="margin: 5px;">
+                    <label for="apiName">Api name</label>
+                    <input type="text" class="form-control" id="apiName" placeholder="Enter Api name">
+                    <input type="hidden"  id="apiNameOrigin">
+                    <input type="hidden"  id="isNewApi">
+                </div>
+                <div class="col-md-12" style="margin: 5px;">
+                    <label for="apiUrl">Api url</label>
+                    <input type="text" class="form-control" id="apiUrl" placeholder="Enter Api url">
+                </div>
+                <div class="col-md-12" style="margin: 5px;">
+                    <label for="apiVersion">Api version</label>
+                    <input type="text" class="form-control" id="apiVersion" placeholder="Enter Api version">
+                </div>
+                <div class="col-md-12" style="margin: 5px;">
+                    <label for="authenticationType">Authentication type</label>
+                    <select class="form-select" aria-label="Select Authentication type" id="authenticationType">
+                        <option value="none"> Select Authentication type</option>
+                        <option value="token">Token</option>
+                        <option value="api-key">API Key</option>
+                    </select>
+                </div>
+                <div class="col-md-12" style="margin: 5px;">
+                    <label for="authenticationSecret">Authentication secret</label>
+                    <input type="text" class="form-control" id="authenticationSecret" placeholder="Enter Authentication secret">
+                </div>
+                <div class="col-md-12" style="margin: 5px;">
+                    <label for="apiDescription">Api description</label>
+                    <input type="text" class="form-control" id="apiDescription" placeholder="Enter Api description">
+                </div>
+                <div class="col-md-12" style="margin: 5px;">
+                    <i class="fa plus fa-2x"  id="buttonApiSaveId" style="visibility: hidden"></i>
+                </div>
+            </div>
+        </div>
+
+
+
+        <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+        <script type="text/javascript" src="./assets/utils/apis.js"></script>
+        <script type="text/javascript" src="./assets/utils/commons.js"></script>
+
+
+        <script type="text/javascript">
+            function googleTranslateElementInit() {
+              new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+            }
+        </script>
+    </body>
+
+</html>

@@ -11,6 +11,20 @@ let settings = JSON.parse(jsonContent);
 console.log(settings);
 
 
+const checkAuthorization = (req,res, next) => {
+        let authorizationKey =   req.header('Authorization');
+
+         console.debug("Authorization: "+authorizationKey);
+         if(authorizationKey && authorizationKey === process.env.SECRETS_API_TOKEN) {
+             console.debug("Authorization success for : "+req.path);
+             next();
+         } else {
+             console.error("Authorization failed for : "+req.path);
+             res.statusCode = 403;
+             res.send("Authorization failed");
+         }
+}
+
 router.all('/gateway/*', (req, resp) => {
 
     let url = req.protocol + '://' + req.get('host') + req.originalUrl;
@@ -135,6 +149,120 @@ const startRequest =  ((req, resp, method, route, headers, body) => {
             return ;
        });
 });
+
+
+/****************************
+*     Statics Pages         *
+*****************************/
+router.get('/manage-apis', function(req,res){
+    res.redirect("/manage-apis/index.html");
+    return ;
+});
+
+
+
+/****************************
+*            Apis           *
+*****************************/
+router.get('/manage-apis/apis', checkAuthorization, function(req,res){
+    res.statusCode = 200;
+    res.send(readConfiguration().map(api => {
+        console.debug("-->"+api.apiName)
+        return api.apiName;
+        }
+    ));
+    return ;
+});
+router.get('/manage-apis/apis/:apiName', checkAuthorization, function(req,res){
+    var apiName = req.params['apiName'];
+
+    console.debug("Get api by name : "+apiName );
+
+    res.statusCode = 200;
+    res.send(readConfiguration().filter(api=>api.apiName === apiName).map(api => api));
+    return ;
+});
+router.post('/manage-apis/apis', checkAuthorization, function(req,res){
+    console.debug("Save new api :"+JSON.stringify(req.body) );
+
+    var configuration = readConfiguration();
+
+    var api = configuration.filter(api => api.apiName === req.body.apiName );
+
+    if(api && api !== null && api.length > 0) {
+        res.statusCode = 409;
+        res.send( "Api already exist" );
+    } else {
+        console.log( "Process saving new api : " + environmentName);
+        configuration.push({
+            "apiName":req.body.apiName,
+            "apiUrl":req.body.apiUrl,
+            "apiDescription":req.body.apiDescription,
+            "apiVersion":req.body.apiVersion,
+            "authenticationType":req.body.authenticationType,
+            "authenticationSecret":req.body.authenticationSecret
+        });
+
+        this.writConfiguration(configuration);
+
+        res.statusCode = 200;
+        res.json( req.body.apiName );
+    }
+    return ;
+});
+router.put('/manage-apis/apis/:apiName', checkAuthorization, function(req,res){
+    var apiName = req.params['apiName'];
+
+    console.debug("Save Api : "+apiName+", content :"+JSON.stringify(req.body) );
+
+    var configuration = readConfiguration();
+
+    return configuration.filter(api => api.apiName === apiName ).map(api => {
+        api.apiName = req.body.apiName;
+        api.apiUrl = req.body.apiUrl;
+        api.apiDescription = req.body.apiDescription;
+        api.apiVersion = req.body.apiVersion;
+        api.authenticationType = req.body.authenticationType;
+        api.authenticationSecret = req.body.authenticationSecret;
+
+        this.writConfiguration(configuration);
+        res.statusCode = 200;
+        res.json( req.body.apiName );
+
+    });
+    return ;
+});
+router.delete('/manage-apis/apis/:apiName', checkAuthorization, function(req,res){
+    var apiName = req.params['apiName'];
+
+    console.debug("Remove Api by name : "+apiName );
+
+    res.statusCode = 200;
+    let configuration = readConfiguration();
+    let apis = configuration.filter(api=>api.apiName !== apiName);
+    this.writConfiguration(apis);
+    res.json(apiName);
+    return ;
+});
+
+
+
+/****************************
+*           Commons         *
+*****************************/
+writConfiguration = ((data) => {
+    fs.writeFileSync('confs/settings.json', JSON.stringify(data,null, 2));
+});
+
+readConfiguration = (() => {
+    let jsonContent = fs.readFileSync('confs/settings.json');
+    let settings = JSON.parse(jsonContent);
+
+    console.debug(settings);
+
+    return settings;
+});
+
 
 
 module.exports = router;
