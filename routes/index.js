@@ -193,7 +193,7 @@ router.post('/manage-apis/apis', checkAuthorization, function(req,res){
         res.statusCode = 409;
         res.send( "Api already exist" );
     } else {
-        console.log( "Process saving new api : " + environmentName);
+        console.log( "Process saving new api : " + req.body.apiName);
         configuration.push({
             "apiName":req.body.apiName,
             "apiUrl":req.body.apiUrl,

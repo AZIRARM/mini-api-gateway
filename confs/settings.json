@@ -1,24 +1,8 @@
 [
   {
     "apiName": "users-api",
-    "apiUrl": "http://192.168.0.194:1180/users",
+    "apiUrl": "http://192.168.0.10:1180/users",
     "apiDescription": "Api to manage Users",
-    "apiVersion": "0.0.1",
-    "authenticationType": "api-key",
-    "authenticationSecret": "Izr8tvToO2jsh7Lna48s5RLSWt0iYZQP"
-  },
-  {
-    "apiName": "parameters-api",
-    "apiUrl": "http://localhost:1181/parameters",
-    "apiDescription": "Api to manage parameters",
-    "apiVersion": "0.0.1",
-    "authenticationType": "api-key",
-    "authenticationSecret": "Izr8tvToO2jsh7Lna48s5RLSWt0iYZQP"
-  },
-  {
-    "apiName": "offers-api",
-    "apiUrl": "http://localhost:1182/offers",
-    "apiDescription": "Api to manage offers",
     "apiVersion": "0.0.1",
     "authenticationType": "api-key",
     "authenticationSecret": "Izr8tvToO2jsh7Lna48s5RLSWt0iYZQP"

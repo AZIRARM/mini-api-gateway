@@ -3,7 +3,10 @@
 
 
 $('#refreshAuthorizationId').on('click', function() {
-    $("#selectApiId").empty().append('<option value="none"> Select api </option>');;
+   refreshSelect();
+});
+const refreshSelect =(() => {
+ $("#selectApiId").empty().append('<option value="none"> Select api </option>');;
     $.ajax({
         url: './apis',
         headers: {
@@ -47,7 +50,7 @@ const selectApi =((appSelected) => {
                         $("#apiNameOrigin").val(response[0].apiName);
                         $("#apiUrl").val(response[0].apiUrl);
                         $("#apiVersion").val(response[0].apiVersion);
-                        $('#authenticationType option[value="'+val(response[0].authenticationType+'"]')).prop('selected', true);
+                        $('#authenticationType option[value="'+response[0].authenticationType+'"]').prop('selected', true);
                         $("#authenticationSecret").val(response[0].authenticationSecret);
                         $("#apiDescription").val(response[0].apiDescription);
                     } else {
@@ -98,7 +101,9 @@ $('#buttonApiSaveId').on('click', function() {
             },
             data: JSON.stringify(body),
             success: function(api) {
-                alert("Api : "+app+", successfully updated");
+                alert("Api : "+api+", successfully updated");
+                refreshSelect();
+                selectApi('none');
                 return;
             }
         });
@@ -123,7 +128,9 @@ $('#buttonApiSaveId').on('click', function() {
             },
             data: JSON.stringify(body),
             success: function(api) {
-                alert("Api : "+app+", successfully added");
+                alert("Api : "+api+", successfully added");
+                $('#selectApiId').append('<option value="'+api+'">'+api+' </option>');
+
                 return;
             }
         });
@@ -142,7 +149,9 @@ $('#buttonApiRemoveId').on('click', function() {
                     success: function(api) {
                         alert("Api : "+selectedApi+", Removed successfully");
                         $("#selectApiId option[value='"+selectedApi+"']").remove();
-                        $('#selectApiId').empty().append('<option value="none"> Select Api </option>');
+
+
+                        $("#selectApiId option[value='"+api+"']").remove();
 
 
                         $('#ApiPanelId').css('visibility', 'hidden');
