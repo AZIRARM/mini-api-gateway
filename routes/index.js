@@ -88,7 +88,7 @@ router.all('/gateway/*', (req, resp) => {
                 delete req.headers['user-agent'];
 
 
-                startRequest(req, resp, req.method, route, JSON.stringify(req.headers), JSON.stringify(req.body));
+               return startRequest(req, resp, req.method, route, JSON.stringify(req.headers), JSON.stringify(req.body));
               } else {
                 resp.statusCode = 500;
                 resp.send("An error in your configuration is present, please check the configuration file before continuing");
@@ -124,16 +124,21 @@ const checkAuthentication = ((secret, setting, response) => {
 });
 
 const startRequest =  ((req, resp, method, route, headers, body) => {
-    console.log("----> Call route " + route + ", Method : " + method);
+    console.debug("----> Call route: " + route + ", Method: " + method);
+    console.debug("-------> Headers: " +  req.headers['accept']+ ", "+ req.headers['content-type']);
+    console.debug("-------> Body: " + body);
     request({
          headers: {
             'Accept': req.headers['accept'],
-            'Content-Type': req.headers['content-Type']
+            'Content-Type': req.headers['content-type']
           },
          uri: route,
          body: body,
          method: method
        }, function (err, res, body) {
+
+            console.debug("Response ---------> OK: " + res.statusCode);
+
             if (err) {
                 console.log(err);
                 return ;
@@ -144,8 +149,10 @@ const startRequest =  ((req, resp, method, route, headers, body) => {
                 resp.send("Error access : " + route + ", Status Code : " + res.statusCode);
                 return ;
             }
+            console.debug("Response ---------> Status: " + res.statusCode);
+            console.debug("Response ---------> Body: " + JSON.stringify(res.body));
             resp.statusCode = res.statusCode;
-            resp.send(res.body);
+            resp.json(JSON.parse(res.body));
             return ;
        });
 });
