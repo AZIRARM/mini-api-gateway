@@ -125,35 +125,34 @@ const checkAuthentication = ((secret, setting, response) => {
 
 const startRequest =  ((req, resp, method, route, headers, body) => {
     console.debug("----> Call route: " + route + ", Method: " + method);
-    console.debug("-------> Headers: " +  req.headers['accept']+ ", "+ req.headers['content-type']);
+    console.debug("-------> Headers: " +  headers);
     console.debug("-------> Body: " + body);
     request({
-         headers: {
-            'Accept': req.headers['accept'],
-            'Content-Type': req.headers['content-type']
-          },
+         headers: headers,
          uri: route,
          body: body,
          method: method
        }, function (err, res, body) {
-
-            console.debug("Response ---------> OK: " + res.statusCode);
-
             if (err) {
-                console.log(err);
-                return ;
+                console.error(err);
+                resp.statusCode = 500;
+                resp.json(JSON.parse(err));
             }
-            if(res.statusCode >= 400) {
+            else if(res && res.statusCode >= 400) {
                 console.error("Error occurred when call  : " + route + ", Method : " + method + ", Status Code : " + res.statusCode);
                 resp.statusCode = res.statusCode;
                 resp.send("Error access : " + route + ", Status Code : " + res.statusCode);
-                return ;
+            } else if(res) {
+                console.debug("Response ---------> Status: " + res.statusCode);
+                console.debug("Response ---------> Body: " + JSON.stringify(res.body));
+                resp.statusCode = res.statusCode;
+                resp.json(JSON.parse(res.body));
+            } else {
+                console.error("Unknown Error");
+                resp.statusCode = 500;
+                resp.json("Unknown Error");
             }
-            console.debug("Response ---------> Status: " + res.statusCode);
-            console.debug("Response ---------> Body: " + JSON.stringify(res.body));
-            resp.statusCode = res.statusCode;
-            resp.json(JSON.parse(res.body));
-            return ;
+            return;
        });
 });
 

@@ -16,11 +16,11 @@ RUN mkdir -p /tmp
 # Download mini-api-gateway and unzip it
 WORKDIR /tmp
 
-RUN wget https://github.com/AZIRARM/mini-api-gateway/archive/refs/tags/0.0.2.zip -P /tmp/
-RUN unzip 0.0.2.zip -d /app
-RUN rm -f 0.0.2.zip
+RUN wget https://github.com/AZIRARM/mini-api-gateway/archive/refs/tags/0.0.3.zip -P /tmp/
+RUN unzip 0.0.3.zip -d /app
+RUN rm -f 0.0.3.zip
 
-RUN mv /app/mini-api-gateway-0.0.2 /app/mini-api-gateway
+RUN mv /app/mini-api-gateway-0.0.3 /app/mini-api-gateway
 
 WORKDIR /app/mini-api-gateway
 
